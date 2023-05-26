@@ -120,3 +120,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'auctions', 'static')
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "static"),
+#       '/home/juliamax/project2/commerce/commerce/auctions/static',
+# ]
+
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

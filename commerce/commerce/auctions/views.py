@@ -8,7 +8,10 @@ from .models import User, Listing
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    listings = Listing.objects.all()
+    return render(request, "auctions/index.html", {
+        'listings': listings
+    })
 
 
 def login_view(request):

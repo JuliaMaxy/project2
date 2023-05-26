@@ -2,6 +2,20 @@
 
 {% block body %}
     <h2>Active Listings</h2>
-
-    TODO
+    <ul class="list-group">  
+        {% for listing in listings %}
+            <li class="listing list-group-item">
+                {% if listing.picture %}
+                <img src="{{ listing.picture.url }}" alt="">
+                {% endif %}
+                <div class="wrapper">
+                    <h4>{{listing.title}}</h4>
+                    <br>
+                    <h5>Price: ${{listing.starting_bid}}</h5>
+                    <h6>{{listing.description}}</h6>
+                    Created {{listing.time}}
+                </div>
+            </li>
+        {%endfor%}
+    </ul>
 {% endblock %}
