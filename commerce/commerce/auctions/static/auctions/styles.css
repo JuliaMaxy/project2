@@ -9,3 +9,14 @@ body {
     background-color: grey;
     color:white;
 }
+li.listing h4{
+    color:rgb(75, 75, 99)
+}
+li.listing{
+    display:flex;
+    justify-content: space-between;
+    padding: 30px
+}
+.wrapper{
+    margin-right: 650px;
+}

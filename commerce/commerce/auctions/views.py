@@ -77,7 +77,7 @@ def new(request):
                 category = request.POST["category"]
                 condition = request.POST["condition"]
                 bid = int(request.POST["bid"])
-                image = request.POST["img"]
+                image = request.FILES["img"]
                 user = request.user
                 listing = Listing(title=title, description=description, category=category, condition=condition, starting_bid=bid,
                                 creator=user, picture=image)

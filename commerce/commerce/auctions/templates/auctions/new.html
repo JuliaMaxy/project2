@@ -3,7 +3,7 @@
 {% block body %}
     <h2>Create New Listing</h2>
 
-    <form action="{% url 'new' %}" method="post">
+    <form action="{% url 'new' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-group">
             <input autofocus class="form-control" type="text" name="title" placeholder="Title">

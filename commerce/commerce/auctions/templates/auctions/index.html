@@ -6,7 +6,7 @@
         {% for listing in listings %}
             <li class="listing list-group-item">
                 {% if listing.picture %}
-                <img src="{{ listing.picture.url }}" alt="">
+                <img src="{{ listing.picture.url }}" alt="" width="250">
                 {% endif %}
                 <div class="wrapper">
                     <h4>{{listing.title}}</h4>
