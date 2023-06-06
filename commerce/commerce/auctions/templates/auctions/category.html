@@ -1,0 +1,31 @@
+{% extends "auctions/layout.html" %}
+
+{%block title%}
+ {{category.title}}
+{% endblock %}
+
+{% block body %}
+    <h2>Category {{category.title}}</h2>
+    <ul class="list-group">  
+        {% for listing in listings %}
+            <a href="{% url 'listing' listing.id%}">
+                <li class="listing list-group-item">
+                    {% if listing.picture %}
+                    <img src="{{ listing.picture.url }}" alt="" width="250">
+                    {% endif %}
+                    <div class="wrapper">
+                        <h4>{{listing.title}}</h4>
+                        <br>
+                        <h5>Price: ${{listing.starting_bid}}</h5>
+                        <h6>{{listing.description}}</h6>
+                        Created {{listing.time}}
+                    </div>
+                </li>
+            </a>
+        {%empty%}
+            <ul>
+                <li>No active listings</li>
+            </ul>
+        {%endfor%}
+    </ul>
+{% endblock %}

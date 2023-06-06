@@ -137,3 +137,11 @@ def categories(request):
     return render(request, "auctions/categories.html", {
         "categories":categories
     })
+
+@login_required
+def category(request, category_id):
+    category = Category.objects.get(pk=category_id)
+    listings = category.listings.all()
+    return render(request, "auctions/category.html", {
+        "listings":listings, "category": category
+    })
