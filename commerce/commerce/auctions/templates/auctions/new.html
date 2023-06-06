@@ -16,7 +16,12 @@
             <input autofocus class="form-control" type="text" name="description" placeholder="Description">
         </div>
         <div class="form-group">
-            <input autofocus class="form-control" type="text" name="category" placeholder="Category">
+            <label for="category">Category:</label>
+            <select class="form-control" name="category">
+                {% for category in categories %}
+                 <option value="{{category.id}}">{{category.title}}</option>
+                {% endfor %}
+            </select>
         </div>
         <div class="form-group">
             <input autofocus class="form-control" type="text" name="condition" placeholder="Condition">

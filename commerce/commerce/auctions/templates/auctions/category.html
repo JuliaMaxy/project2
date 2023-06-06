@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    <h2>Category {{category.title}}</h2>
+    <h2>Category: {{category.title}}</h2>
     <ul class="list-group">  
         {% for listing in listings %}
             <a href="{% url 'listing' listing.id%}">

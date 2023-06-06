@@ -69,11 +69,15 @@ def register(request):
 def new(request):
     if request.user.is_authenticated:
         if request.method == 'GET':
-            return render(request, "auctions/new.html")
+            categories = Category.objects.all()
+            return render(request, "auctions/new.html", {
+                "categories": categories
+            })
         else:
                 title = request.POST["title"]
                 description = request.POST["description"]
                 category = request.POST["category"]
+                category = Category.objects.get(pk=category)
                 condition = request.POST["condition"]
                 bid = int(request.POST["bid"])
                 image = request.FILES["img"]

@@ -41,7 +41,7 @@
         </li>
         <li>
             {% if listing.category %}
-            Category: {{listing.category}}
+            <a href="{% url 'category' listing.category.id%}">Category: {{listing.category}}</a>
             {% else %}
             Category: No Category Listed
             {% endif %}
