@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from .models import User, Listing, WatchList
+from .models import User, Listing, WatchList, Category
 
 
 def index(request):
@@ -129,3 +129,11 @@ def watchlist(request):
         deletion= user.watchlist.get(listing=listing)
         deletion.delete()
         return HttpResponseRedirect(reverse("watchlist"))
+
+
+@login_required
+def categories(request):
+    categories = Category.objects.all()
+    return render(request, "auctions/categories.html", {
+        "categories":categories
+    })
