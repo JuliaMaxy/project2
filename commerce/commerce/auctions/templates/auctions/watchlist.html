@@ -1,7 +1,11 @@
 {% extends "auctions/layout.html" %}
 
+{% block title %}
+  Watchlist
+{% endblock %}
+
 {% block body %}
-    <h2>Active Listings</h2>
+    <h1>Watchlist:</h1>
     <ul class="list-group">  
         {% for listing in listings %}
             <a href="{% url 'listing' listing.id%}">
@@ -16,6 +20,11 @@
                         <h6>{{listing.description}}</h6>
                         Created {{listing.time}}
                     </div>
+                    <form action="{% url 'watchlist'%}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{listing.id}}" name="delete_listing">
+                        <button type="submit"> Delete From Watchlist</button>
+                    </form>
                 </li>
             </a>
         {%endfor%}

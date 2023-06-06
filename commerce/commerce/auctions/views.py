@@ -3,8 +3,8 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-
-from .models import User, Listing
+from django.contrib.auth.decorators import login_required
+from .models import User, Listing, WatchList
 
 
 def index(request):
@@ -71,7 +71,6 @@ def new(request):
         if request.method == 'GET':
             return render(request, "auctions/new.html")
         else:
-            
                 title = request.POST["title"]
                 description = request.POST["description"]
                 category = request.POST["category"]
@@ -85,3 +84,48 @@ def new(request):
                 return HttpResponseRedirect(reverse("index"))
     else:
         return HttpResponseRedirect(reverse("index"))
+
+
+@login_required
+def listing(request, listing_id):
+    if request.method == 'GET':
+        user = request.user
+        listing =  Listing.objects.get(pk=listing_id)
+        in_watchlist = WatchList.objects.filter(user=user, listing=listing).exists()
+        if in_watchlist:
+            return render(request, "auctions/listing.html", {
+                "listing":listing, "in_watchlist": True
+            })
+        else:
+             return render(request, "auctions/listing.html", {
+                "listing":listing, "in_watchlist": False
+            })
+    else:
+        user = request.user
+        if request.POST["add_listing"]:
+            listing_id = request.POST["add_listing"]
+            listing = Listing.objects.get(pk=listing_id)
+            addition = WatchList.objects.create(listing=listing)
+            addition.user.add(user) 
+        return HttpResponseRedirect(reverse("watchlist"))
+
+
+@login_required   
+def watchlist(request):
+    if request.method == "GET":
+        user = request.user
+        watchlist = user.watchlist.all()
+        listings = []
+        for listing in watchlist:
+            listings.append(listing.listing)
+
+        print(listings)
+        return render(request, "auctions/watchlist.html", {
+            "listings":listings})
+    else:
+        user = request.user
+        listing_id = request.POST["delete_listing"]
+        listing = Listing.objects.get(pk=listing_id)
+        deletion= user.watchlist.get(listing=listing)
+        deletion.delete()
+        return HttpResponseRedirect(reverse("watchlist"))
