@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth import get_user_model
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -95,19 +96,13 @@ def listing(request, listing_id):
     user = request.user
     listing =  Listing.objects.get(pk=listing_id)
     in_watchlist = WatchList.objects.filter(user=user, listing=listing).exists()
-    w = WatchList.objects.filter(listing=listing)
-    watchers = 0
-    for watcher in w:
-        watchers += 1
+    watchers = WatchList.objects.filter(listing=listing).count()
+    bids = Bid.objects.filter(listing=listing).count()
+    last =  Bid.objects.filter(listing=listing).order_by('added_time').first()
     if request.method == 'GET':
-        if in_watchlist:
-            return render(request, "auctions/listing.html", {
-                "listing":listing, "in_watchlist": True, "watchers":watchers
-            })
-        else:
-            return render(request, "auctions/listing.html", {
-                "listing":listing, "in_watchlist": False, "watchers":watchers
-            })
+        return render(request, "auctions/listing.html", {
+            "listing":listing, "in_watchlist": in_watchlist, "watchers":watchers, "bids":bids
+        })
     else:
         if request.POST["form"] == "1":
             listing_id = request.POST["add_listing"]
@@ -117,32 +112,33 @@ def listing(request, listing_id):
         elif request.POST["form"] == "2":
             bid = request.POST["bid"]
             bidded = Bid.objects.filter(listing=listing).exists()
+            
             if not bidded:
                 if int(bid) > listing.starting_bid:
                     b = Bid.objects.create(listing=listing, amount=bid)
                     b.user.add(user)
+                    listing.current_bid = bid
+                    listing.save()
+                    bids = Bid.objects.filter(listing=listing).count()
                     return render(request, "auctions/listing.html", {
-                        "listing":listing, "in_watchlist": True, "watchers":watchers, "message":"Success"
+                        "listing":listing, "in_watchlist": in_watchlist, "watchers":watchers, "message":"Success","bids":bids
                     })
             else:
                 last =  Bid.objects.filter(listing=listing).order_by('added_time').first()
                 if int(bid)> last.amount:
                     b = Bid.objects.create(listing=listing, amount=bid)
                     b.user.add(user)
+                    listing.current_bid = bid
+                    listing.save()
+                    bids = Bid.objects.filter(listing=listing).count()
                     return render(request, "auctions/listing.html", {
-                        "listing":listing, "in_watchlist": True, "watchers":watchers, "message":"Success"
+                        "listing":listing, "in_watchlist": in_watchlist, "watchers":watchers, "message":"Success", "bids":bids
                     })
             
             return render(request, "auctions/listing.html", {
-                "listing":listing, "in_watchlist": True, "watchers":watchers, "message":"Failed"
+                "listing":listing, "in_watchlist": in_watchlist, "watchers":watchers, "message":"Failed"
             })
-    w = WatchList.objects.filter(listing=listing)
-    watchers = 0
-    for watcher in w:
-        watchers += 1 
-    return render(request, "auctions/listing.html", {
-                "listing":listing, "in_watchlist": True, "watchers":watchers
-            })
+    return HttpResponseRedirect(reverse("listing",args=(listing.id,)))
 
 @login_required   
 def watchlist(request):
@@ -166,9 +162,8 @@ def watchlist(request):
         watchers = 0
         for watcher in w:
             watchers += 1
-        return render(request, "auctions/listing.html", {
-                "listing":listing, "in_watchlist": False, "watchers":watchers
-            })
+        bids = Bid.objects.filter(listing=listing).count()
+        return HttpResponseRedirect(reverse("listing",args=(listing.id,)))
 
 
 @login_required

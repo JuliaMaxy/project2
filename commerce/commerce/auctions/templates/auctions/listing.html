@@ -15,7 +15,13 @@
         <img src="{{listing.picture.url}}" width="300px">
     </div>
     <h6>{{listing.description}}</h6>
-    <h2>${{listing.starting_bid}}</h2>
+    <h2>$
+        {% if listing.current_bid == 0%}
+        {{listing.starting_bid}}
+        {% else %}
+        {{listing.current_bid}}
+        {% endif %}
+    </h2>
     <div>Watchers: {{watchers}}</div><br>
     {% if not in_watchlist %}
         <form action="{% url 'listing' listing.id%}" method="post">
@@ -33,6 +39,7 @@
         </form>
     {% endif %}
     <br>
+    <h5>{{bids}} bid(s) so far.</h5>
     <form action="{% url 'listing' listing.id%}" method="post">
         {% csrf_token %}
         <input type="number" name="bid">

@@ -12,7 +12,11 @@
                     <div class="wrapper">
                         <h4>{{listing.title}}</h4>
                         <br>
-                        <h5>Price: ${{listing.starting_bid}}</h5>
+                        <h5>Price: ${% if listing.current_bid == 0%}
+                            {{listing.starting_bid}}
+                            {% else %}
+                            {{listing.current_bid}}
+                            {% endif %}</h5>
                         <h6>{{listing.description}}</h6>
                         Created {{listing.time}}
                     </div>
