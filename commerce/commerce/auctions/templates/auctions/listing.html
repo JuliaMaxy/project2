@@ -14,6 +14,7 @@
     </div>
     <h6>{{listing.description}}</h6>
     <h2>${{listing.starting_bid}}</h2>
+    <div>Watchers: {{watchers}}</div><br>
     {% if not in_watchlist %}
         <form action="{% url 'listing' listing.id%}" method="post">
             {% csrf_token %}

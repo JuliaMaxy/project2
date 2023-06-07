@@ -92,27 +92,35 @@ def new(request):
 
 @login_required
 def listing(request, listing_id):
+    user = request.user
+    listing =  Listing.objects.get(pk=listing_id)
+    in_watchlist = WatchList.objects.filter(user=user, listing=listing).exists()
+    w = WatchList.objects.filter(listing=listing)
+    watchers = 0
+    for watcher in w:
+        watchers += 1
     if request.method == 'GET':
-        user = request.user
-        listing =  Listing.objects.get(pk=listing_id)
-        in_watchlist = WatchList.objects.filter(user=user, listing=listing).exists()
         if in_watchlist:
             return render(request, "auctions/listing.html", {
-                "listing":listing, "in_watchlist": True
+                "listing":listing, "in_watchlist": True, "watchers":watchers
             })
         else:
-             return render(request, "auctions/listing.html", {
-                "listing":listing, "in_watchlist": False
+            return render(request, "auctions/listing.html", {
+                "listing":listing, "in_watchlist": False, "watchers":watchers
             })
     else:
-        user = request.user
         if request.POST["add_listing"]:
             listing_id = request.POST["add_listing"]
             listing = Listing.objects.get(pk=listing_id)
             addition = WatchList.objects.create(listing=listing)
-            addition.user.add(user) 
-        return HttpResponseRedirect(reverse("watchlist"))
-
+            addition.user.add(user)
+    w = WatchList.objects.filter(listing=listing)
+    watchers = 0
+    for watcher in w:
+        watchers += 1 
+    return render(request, "auctions/listing.html", {
+                "listing":listing, "in_watchlist": True, "watchers":watchers
+            })
 
 @login_required   
 def watchlist(request):
@@ -132,7 +140,13 @@ def watchlist(request):
         listing = Listing.objects.get(pk=listing_id)
         deletion= user.watchlist.get(listing=listing)
         deletion.delete()
-        return HttpResponseRedirect(reverse("watchlist"))
+        w = WatchList.objects.filter(listing=listing)
+        watchers = 0
+        for watcher in w:
+            watchers += 1
+        return render(request, "auctions/listing.html", {
+                "listing":listing, "in_watchlist": False, "watchers":watchers
+            })
 
 
 @login_required
