@@ -7,7 +7,9 @@
 
 {% block body %}
     
-    
+    {% if message %}
+    <h1>{{message}}</h1>
+    {% endif %}
     <h1>Listing: {{listing.title}}</h1>
     <div>
         <img src="{{listing.picture.url}}" width="300px">
@@ -18,16 +20,25 @@
     {% if not in_watchlist %}
         <form action="{% url 'listing' listing.id%}" method="post">
             {% csrf_token %}
+            <input type="hidden" name="form" value="1">
             <input type="hidden" value="{{listing.id}}" name="add_listing">
             <button type="submit">Add To Watchlist</button>
         </form>
     {% else %}
         <form action="{% url 'watchlist'%}" method="post">
             {% csrf_token %}
+            <input type="hidden" name="form" value="1">
             <input type="hidden" value="{{listing.id}}" name="delete_listing">
             <button type="submit"> Delete From Watchlist</button>
         </form>
     {% endif %}
+    <br>
+    <form action="{% url 'listing' listing.id%}" method="post">
+        {% csrf_token %}
+        <input type="number" name="bid">
+        <input type="hidden" name="form" value="2">
+        <button type="submit">Bid</button>
+    </form>
     <h2>Details:</h2>
     <ul>
         <li>

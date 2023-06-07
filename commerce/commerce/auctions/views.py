@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from .models import User, Listing, WatchList, Category
+from .models import User, Listing, WatchList, Category ,Bid
 
 
 def index(request):
@@ -109,11 +109,33 @@ def listing(request, listing_id):
                 "listing":listing, "in_watchlist": False, "watchers":watchers
             })
     else:
-        if request.POST["add_listing"]:
+        if request.POST["form"] == "1":
             listing_id = request.POST["add_listing"]
             listing = Listing.objects.get(pk=listing_id)
             addition = WatchList.objects.create(listing=listing)
             addition.user.add(user)
+        elif request.POST["form"] == "2":
+            bid = request.POST["bid"]
+            bidded = Bid.objects.filter(listing=listing).exists()
+            if not bidded:
+                if int(bid) > listing.starting_bid:
+                    b = Bid.objects.create(listing=listing, amount=bid)
+                    b.user.add(user)
+                    return render(request, "auctions/listing.html", {
+                        "listing":listing, "in_watchlist": True, "watchers":watchers, "message":"Success"
+                    })
+            else:
+                last =  Bid.objects.filter(listing=listing).order_by('added_time').first()
+                if int(bid)> last.amount:
+                    b = Bid.objects.create(listing=listing, amount=bid)
+                    b.user.add(user)
+                    return render(request, "auctions/listing.html", {
+                        "listing":listing, "in_watchlist": True, "watchers":watchers, "message":"Success"
+                    })
+            
+            return render(request, "auctions/listing.html", {
+                "listing":listing, "in_watchlist": True, "watchers":watchers, "message":"Failed"
+            })
     w = WatchList.objects.filter(listing=listing)
     watchers = 0
     for watcher in w:
