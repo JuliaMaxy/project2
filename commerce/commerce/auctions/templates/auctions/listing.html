@@ -10,6 +10,9 @@
     {% if message %}
     <h1>{{message}}</h1>
     {% endif %}
+    {% if bidder %}
+    <h4>You bid on this listing</h4>
+    {% endif %}
     <h1>Listing: {{listing.title}}</h1>
     <div>
         <img src="{{listing.picture.url}}" width="300px">
@@ -39,7 +42,14 @@
         </form>
     {% endif %}
     <br>
-    <h5>{{bids}} bid(s) so far.</h5>
+    <h5>{{bids}} bid(s) so far.
+        {% if last_user == request.user %}
+        Your bid is the current one
+        {% elif  last_user == ''%}
+        {% else %}
+        {{last_user}}'s bid is the current one
+        {% endif %}
+    </h5>
     <form action="{% url 'listing' listing.id%}" method="post">
         {% csrf_token %}
         <input type="number" name="bid">

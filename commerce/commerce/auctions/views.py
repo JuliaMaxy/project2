@@ -93,50 +93,65 @@ def new(request):
 
 @login_required
 def listing(request, listing_id):
+    # get currently singed in user
     user = request.user
+    # get the listings based on id provided
     listing =  Listing.objects.get(pk=listing_id)
+    # check if the listing is in the user's watchlist
     in_watchlist = WatchList.objects.filter(user=user, listing=listing).exists()
+    # get the number of watchers of the listing
     watchers = WatchList.objects.filter(listing=listing).count()
+    # get the number of bids on the listing
     bids = Bid.objects.filter(listing=listing).count()
-    last =  Bid.objects.filter(listing=listing).order_by('added_time').first()
+    # get the last bid on the listing
+    if bids > 0:
+        bidder = Bid.objects.filter(listing=listing, user=user).exists()
+        last =  Bid.objects.filter(listing=listing).order_by('added_time').first()
+        last_user = last.user
+    else:
+        bidder = False
+        last_user = ''
+    # if accessed via GET
     if request.method == 'GET':
         return render(request, "auctions/listing.html", {
-            "listing":listing, "in_watchlist": in_watchlist, "watchers":watchers, "bids":bids
+            "listing":listing, "in_watchlist": in_watchlist, "watchers":watchers, "bids":bids, "last_user":last_user, "bidder":bidder
         })
     else:
+        # if POST via watchlist form
         if request.POST["form"] == "1":
             listing_id = request.POST["add_listing"]
             listing = Listing.objects.get(pk=listing_id)
             addition = WatchList.objects.create(listing=listing)
             addition.user.add(user)
+        # if POST via bid form
         elif request.POST["form"] == "2":
             bid = request.POST["bid"]
             bidded = Bid.objects.filter(listing=listing).exists()
             
             if not bidded:
                 if int(bid) > listing.starting_bid:
-                    b = Bid.objects.create(listing=listing, amount=bid)
-                    b.user.add(user)
+                    b = Bid(listing=listing, amount=bid, user=user)
+                    b.save()
                     listing.current_bid = bid
                     listing.save()
                     bids = Bid.objects.filter(listing=listing).count()
                     return render(request, "auctions/listing.html", {
-                        "listing":listing, "in_watchlist": in_watchlist, "watchers":watchers, "message":"Success","bids":bids
+                        "listing":listing, "in_watchlist": in_watchlist, "watchers":watchers, "message":"Success","bids":bids, "last_user":request.user, "bidder":True
                     })
             else:
                 last =  Bid.objects.filter(listing=listing).order_by('added_time').first()
                 if int(bid)> last.amount:
-                    b = Bid.objects.create(listing=listing, amount=bid)
-                    b.user.add(user)
+                    b = Bid(listing=listing, amount=bid, user=user)
+                    b.save()
                     listing.current_bid = bid
                     listing.save()
                     bids = Bid.objects.filter(listing=listing).count()
                     return render(request, "auctions/listing.html", {
-                        "listing":listing, "in_watchlist": in_watchlist, "watchers":watchers, "message":"Success", "bids":bids
+                        "listing":listing, "in_watchlist": in_watchlist, "watchers":watchers, "message":"Success", "bids":bids, "last_user":last.user, "bidder":True
                     })
             
             return render(request, "auctions/listing.html", {
-                "listing":listing, "in_watchlist": in_watchlist, "watchers":watchers, "message":"Failed"
+                "listing":listing, "in_watchlist": in_watchlist, "watchers":watchers, "bids":bids, "message":"Failed", "last_user":last_user, "bidder":bidder
             })
     return HttpResponseRedirect(reverse("listing",args=(listing.id,)))
 
