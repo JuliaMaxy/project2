@@ -1,10 +1,10 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <h2>Closed Listings</h2>
     <ul class="list-group">  
         {% for listing in listings %}
-            {% if listing.active %}
+            {% if not listing.active %}
             <a href="{% url 'listing' listing.id%}">
                 <li class="listing list-group-item">
                     {% if listing.picture %}

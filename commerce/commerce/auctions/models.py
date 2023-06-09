@@ -40,6 +40,7 @@ class Listing(models.Model):
     condition = models.CharField(max_length=100)
     time = models.DateTimeField(auto_now_add=True)
     winner = models.ForeignKey(User, on_delete=models.SET_NULL,default=None, blank=True, null=True, related_name="won")
+    closed_time = models.DateTimeField(default=None, blank=True, null=True)
 
     def __str__(self):
         return f"{self.title}"

@@ -1,8 +1,10 @@
 {% extends "auctions/layout.html" %}
 
+
 {% block title%}
     Listing {{listing.id}}
 {% endblock%}
+
 
 
 {% block body %}
@@ -10,9 +12,28 @@
     {% if message %}
     <h1>{{message}}</h1>
     {% endif %}
+
+    {% if not listing.active %}
+        {% if listing.creator == request.user%}
+        <h4>You created this listing {{listing.time}} and closed it {{listing.closed_time}}</h4>
+        {% else %}
+        <h4>The listing was created {{listing.time}} and closed {{listing.closed_time}}</h4>
+        {% endif %}
+    {%endif%}
+
     {% if bidder %}
-    <h4>You bid on this listing</h4>
+        {% if listing.active %}
+        <h4>You bid on this listing</h4>
+        {% else %}
+            {% if request.user == listing.winner %}
+            <h4>Congrats you won the auction</h4>
+            {% else %}
+            <h4>You bid on this listing but {{listing.winner}} has won the auction</h4>
+            {%endif%}
+        {%endif%}
     {% endif %}
+
+
     <h1>Listing: {{listing.title}}</h1>
     <div>
         <img src="{{listing.picture.url}}" width="300px">
@@ -26,36 +47,53 @@
         {% endif %}
     </h2>
     <div>Watchers: {{watchers}}</div><br>
-    {% if not in_watchlist %}
+    {% if listing.active%}
+        {% if not in_watchlist %}
+            <form action="{% url 'listing' listing.id%}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="form" value="1">
+                <input type="hidden" value="{{listing.id}}" name="add_listing">
+                <button type="submit">Add To Watchlist</button>
+            </form>
+        {% else %}
+            <form action="{% url 'watchlist'%}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="form" value="1">
+                <input type="hidden" value="{{listing.id}}" name="delete_listing">
+                <button type="submit"> Delete From Watchlist</button>
+            </form>
+        {% endif %}
+        <br>
+        <h5>{{bids}} bid(s) so far.
+            {% if last_user == request.user %}
+            Your bid is the current one
+            {% elif  last_user == None%}
+            {% else %}
+            {{last_user}}'s bid is the current one
+            {% endif %}
+        </h5>
+        {% if listing.creator != request.user %}
         <form action="{% url 'listing' listing.id%}" method="post">
             {% csrf_token %}
-            <input type="hidden" name="form" value="1">
-            <input type="hidden" value="{{listing.id}}" name="add_listing">
-            <button type="submit">Add To Watchlist</button>
+            <input type="number" name="bid">
+            <input type="hidden" name="form" value="2">
+            <button type="submit">Bid</button>
         </form>
-    {% else %}
-        <form action="{% url 'watchlist'%}" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="form" value="1">
-            <input type="hidden" value="{{listing.id}}" name="delete_listing">
-            <button type="submit"> Delete From Watchlist</button>
-        </form>
-    {% endif %}
-    <br>
-    <h5>{{bids}} bid(s) so far.
-        {% if last_user == request.user %}
-        Your bid is the current one
-        {% elif  last_user == ''%}
         {% else %}
-        {{last_user}}'s bid is the current one
-        {% endif %}
-    </h5>
-    <form action="{% url 'listing' listing.id%}" method="post">
-        {% csrf_token %}
-        <input type="number" name="bid">
-        <input type="hidden" name="form" value="2">
-        <button type="submit">Bid</button>
-    </form>
+        <h6>You are the creator of the listing. Wolud you like to end the auction?</h6>
+        <form action="{% url 'listing' listing.id%}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="form" value="3">
+            <button type="submit">End the Auction</button>
+        </form>
+        {%endif%}
+    {% else %}
+        {% if listing.winner == None %}
+        Auction has ended. It was closed before anyone bid.
+        {% else %}
+        <h5>Auction has ended.There were {{bids}} bids.{{listing.winner}} has won.</h5>
+        {%endif%}
+    {%endif%}
     <h2>Details:</h2>
     <ul>
         <li>
@@ -75,5 +113,10 @@
             Category: No Category Listed
             {% endif %}
         </li>
+        {%if listing.active%}
+        <li>
+            Created: {{listing.time}}
+        </li>
+        {%endif%}
     </ul>
 {% endblock %}

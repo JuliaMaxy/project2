@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import User, Listing, WatchList, Category ,Bid
+from datetime import datetime
 
 
 def index(request):
@@ -103,14 +104,15 @@ def listing(request, listing_id):
     watchers = WatchList.objects.filter(listing=listing).count()
     # get the number of bids on the listing
     bids = Bid.objects.filter(listing=listing).count()
-    # get the last bid on the listing
     if bids > 0:
+        # find out if the user has already bid on the listing
         bidder = Bid.objects.filter(listing=listing, user=user).exists()
+        # get the last bid on the listing
         last =  Bid.objects.filter(listing=listing).order_by('added_time').first()
         last_user = last.user
     else:
         bidder = False
-        last_user = ''
+        last_user = None
     # if accessed via GET
     if request.method == 'GET':
         return render(request, "auctions/listing.html", {
@@ -119,40 +121,33 @@ def listing(request, listing_id):
     else:
         # if POST via watchlist form
         if request.POST["form"] == "1":
-            listing_id = request.POST["add_listing"]
-            listing = Listing.objects.get(pk=listing_id)
             addition = WatchList.objects.create(listing=listing)
             addition.user.add(user)
         # if POST via bid form
         elif request.POST["form"] == "2":
             bid = request.POST["bid"]
-            bidded = Bid.objects.filter(listing=listing).exists()
-            
-            if not bidded:
-                if int(bid) > listing.starting_bid:
-                    b = Bid(listing=listing, amount=bid, user=user)
-                    b.save()
-                    listing.current_bid = bid
-                    listing.save()
-                    bids = Bid.objects.filter(listing=listing).count()
-                    return render(request, "auctions/listing.html", {
-                        "listing":listing, "in_watchlist": in_watchlist, "watchers":watchers, "message":"Success","bids":bids, "last_user":request.user, "bidder":True
-                    })
+            if bids <= 0 and int(bid) > listing.starting_bid or bids > 0 and int(bid)> last.amount:
+                b = Bid(listing=listing, amount=bid, user=user)
+                b.save()
+                listing.current_bid = bid
+                listing.save()
+                bids = Bid.objects.filter(listing=listing).count()
+                bidder = True
+                last_user = request.user
+                message = "Success"
             else:
-                last =  Bid.objects.filter(listing=listing).order_by('added_time').first()
-                if int(bid)> last.amount:
-                    b = Bid(listing=listing, amount=bid, user=user)
-                    b.save()
-                    listing.current_bid = bid
-                    listing.save()
-                    bids = Bid.objects.filter(listing=listing).count()
-                    return render(request, "auctions/listing.html", {
-                        "listing":listing, "in_watchlist": in_watchlist, "watchers":watchers, "message":"Success", "bids":bids, "last_user":last.user, "bidder":True
-                    })
-            
+                message = "Failure"
             return render(request, "auctions/listing.html", {
-                "listing":listing, "in_watchlist": in_watchlist, "watchers":watchers, "bids":bids, "message":"Failed", "last_user":last_user, "bidder":bidder
-            })
+                    "listing":listing, "in_watchlist": in_watchlist, "watchers":watchers, "message":message,"bids":bids,
+                        "last_user":last_user, "bidder":bidder
+                })
+        elif request.POST["form"] == "3":
+            listing.active = False
+            listing.winner = last_user
+            listing.closed_time = datetime.now()
+            listing.save()
+        
+            
     return HttpResponseRedirect(reverse("listing",args=(listing.id,)))
 
 @login_required   
@@ -194,4 +189,11 @@ def category(request, category_id):
     listings = category.listings.all()
     return render(request, "auctions/category.html", {
         "listings":listings, "category": category
+    })
+
+@login_required
+def closed(request):
+    listings = Listing.objects.all()
+    return render(request, "auctions/closed_listings.html", {
+        'listings': listings
     })
