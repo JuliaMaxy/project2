@@ -94,6 +94,32 @@
         <h5>Auction has ended.There were {{bids}} bids.{{listing.winner}} has won.</h5>
         {%endif%}
     {%endif%}
+
+
+    {% if listing.active and listing.creator != request.user%}
+    <br><br>
+    <form action="{% url 'listing' listing.id%}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form" value="4">
+        <textarea name="comment">Enter your comment here...</textarea>
+        <button type="submit">Comment</button>
+    </form>
+    {% endif %}
+
+
+    <h1>Comments:</h1>
+    <ul>
+        {% for comment in comments %}
+        <li>
+            <h4>{{comment.comment}}</h4>
+            <h6> {{comment.author}}</h6>
+            <h6> {{comment.added_time}}</h6>
+        </li>
+        <br><br>
+        {% empty %}
+        No comments yet
+        {% endfor %}
+    </ul>
     <h2>Details:</h2>
     <ul>
         <li>

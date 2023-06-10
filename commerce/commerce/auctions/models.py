@@ -14,6 +14,13 @@ class Bid(models.Model):
     def __str__(self):
         return f"{self.listing}-{self.amount}"
 
+class Comment(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
+    listing = models.ForeignKey("Listing", on_delete=models.CASCADE, related_name="comments")
+    added_time = models.DateTimeField(auto_now_add=True)
+    comment = models.CharField(max_length=1000)
+    def __str__(self):
+        return f"{self.author} on {self.listing}"
 
 class WatchList(models.Model):
     user = models.ManyToManyField(User,related_name="watchlist")

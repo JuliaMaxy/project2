@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from .models import User, Listing, WatchList, Category ,Bid
+from .models import User, Listing, WatchList, Category ,Bid, Comment
 from datetime import datetime
 
 
@@ -104,6 +104,8 @@ def listing(request, listing_id):
     watchers = WatchList.objects.filter(listing=listing).count()
     # get the number of bids on the listing
     bids = Bid.objects.filter(listing=listing).count()
+    # get all the comments on the listing
+    comments = Comment.objects.filter(listing=listing).all()
     if bids > 0:
         # find out if the user has already bid on the listing
         bidder = Bid.objects.filter(listing=listing, user=user).exists()
@@ -116,7 +118,8 @@ def listing(request, listing_id):
     # if accessed via GET
     if request.method == 'GET':
         return render(request, "auctions/listing.html", {
-            "listing":listing, "in_watchlist": in_watchlist, "watchers":watchers, "bids":bids, "last_user":last_user, "bidder":bidder
+            "listing":listing, "in_watchlist": in_watchlist, "watchers":watchers, "bids":bids,
+              "last_user":last_user, "bidder":bidder, "comments":comments
         })
     else:
         # if POST via watchlist form
@@ -146,6 +149,11 @@ def listing(request, listing_id):
             listing.winner = last_user
             listing.closed_time = datetime.now()
             listing.save()
+        elif request.POST["form"] == "4":
+            c = request.POST["comment"]
+            comment = Comment(author = request.user, listing=listing, comment=c)
+            comment.save()
+
         
             
     return HttpResponseRedirect(reverse("listing",args=(listing.id,)))
@@ -187,8 +195,12 @@ def categories(request):
 def category(request, category_id):
     category = Category.objects.get(pk=category_id)
     listings = category.listings.all()
+    active = []
+    for listing in listings:
+        if listing.active:
+            active.append(listing)
     return render(request, "auctions/category.html", {
-        "listings":listings, "category": category
+        "listings":active, "category": category
     })
 
 @login_required

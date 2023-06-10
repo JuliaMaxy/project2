@@ -20,3 +20,18 @@ li.listing{
 .wrapper{
     margin-right: 650px;
 }
+
+
+textarea {
+    width: 300px;
+    height: 150px;
+    resize: vertical;
+  }
+
+  textarea::placeholder {
+    color: transparent;
+  }
+
+  textarea:focus::placeholder {
+    color: initial;
+  }
