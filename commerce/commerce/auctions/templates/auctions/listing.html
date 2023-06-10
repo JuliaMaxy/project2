@@ -14,7 +14,7 @@
     {% endif %}
 
     {% if not listing.active %}
-        {% if listing.creator == request.user%}
+        {% if user.is_authenticated and listing.creator == request.user%}
         <h4>You created this listing {{listing.time}} and closed it {{listing.closed_time}}</h4>
         {% else %}
         <h4>The listing was created {{listing.time}} and closed {{listing.closed_time}}</h4>
@@ -48,44 +48,50 @@
     </h2>
     <div>Watchers: {{watchers}}</div><br>
     {% if listing.active%}
-        {% if not in_watchlist %}
-            <form action="{% url 'listing' listing.id%}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="form" value="1">
-                <input type="hidden" value="{{listing.id}}" name="add_listing">
-                <button type="submit">Add To Watchlist</button>
-            </form>
-        {% else %}
-            <form action="{% url 'watchlist'%}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="form" value="1">
-                <input type="hidden" value="{{listing.id}}" name="delete_listing">
-                <button type="submit"> Delete From Watchlist</button>
-            </form>
-        {% endif %}
+        {% if user.is_authenticated %}
+            {% if not in_watchlist %}
+                <form action="{% url 'listing' listing.id%}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form" value="1">
+                    <input type="hidden" value="{{listing.id}}" name="add_listing">
+                    <button type="submit">Add To Watchlist</button>
+                </form>
+            {% else %}
+                <form action="{% url 'watchlist'%}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form" value="1">
+                    <input type="hidden" value="{{listing.id}}" name="delete_listing">
+                    <button type="submit"> Delete From Watchlist</button>
+                </form>
+            
+            {% endif %}
+        {%endif%}
         <br>
         <h5>{{bids}} bid(s) so far.
-            {% if last_user == request.user %}
+            {% if user.is_authenticated and last_user == request.user %}
             Your bid is the current one
             {% elif  last_user == None%}
             {% else %}
             {{last_user}}'s bid is the current one
             {% endif %}
         </h5>
-        {% if listing.creator != request.user %}
-        <form action="{% url 'listing' listing.id%}" method="post">
-            {% csrf_token %}
-            <input type="number" name="bid">
-            <input type="hidden" name="form" value="2">
-            <button type="submit">Bid</button>
-        </form>
-        {% else %}
-        <h6>You are the creator of the listing. Wolud you like to end the auction?</h6>
-        <form action="{% url 'listing' listing.id%}" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="form" value="3">
-            <button type="submit">End the Auction</button>
-        </form>
+        {% if user.is_authenticated%}
+            {% if listing.creator != request.user %}
+            <form action="{% url 'listing' listing.id%}" method="post">
+                {% csrf_token %}
+                <input type="number" name="bid">
+                <input type="hidden" name="form" value="2">
+                <button type="submit">Bid</button>
+            </form>
+            {% else %}
+            <h6>You are the creator of the listing. Wolud you like to end the auction?</h6>
+            <form action="{% url 'listing' listing.id%}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="form" value="3">
+                <button type="submit">End the Auction</button>
+            </form>
+            {%endif%}
+        
         {%endif%}
     {% else %}
         {% if listing.winner == None %}
@@ -95,16 +101,21 @@
         {%endif%}
     {%endif%}
 
-
-    {% if listing.active and listing.creator != request.user%}
-    <br><br>
-    <form action="{% url 'listing' listing.id%}" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="form" value="4">
-        <textarea name="comment">Enter your comment here...</textarea>
-        <button type="submit">Comment</button>
-    </form>
-    {% endif %}
+    {%if user.is_authenticated%}
+        {% if listing.active%}
+        <br><br>
+        <form action="{% url 'listing' listing.id%}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="form" value="4">
+            <label for="comment">Comment as {{request.user}}:</label>
+            <br>
+            <textarea name="comment"></textarea>
+            <button type="submit">Comment</button>
+        </form>
+        {% endif %}
+    {%else%}
+    <a class="nav-link" href="{% url 'login' %}">Log In to Add to Watchlist, Bid or Comment</a>
+    {%endif%}
 
 
     <h1>Comments:</h1>
