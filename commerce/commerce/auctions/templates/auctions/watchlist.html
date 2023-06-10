@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Watchlist:</h1>
+    <h2>Watchlist:</h2>
     <ul class="list-group">  
         {% for listing in listings %}
             <a href="{% url 'listing' listing.id%}">
