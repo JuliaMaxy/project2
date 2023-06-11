@@ -12,33 +12,34 @@ body{
 .main_content{
     margin-top:100px
 }
+
+/* text */
 h2, .text-beige{
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
+.text-beige{
+    color:rgb(237, 237, 203)!important;
+    margin-left: 25px;
+}
+
+/* navbar */
 .bg-green {
-    background-color:rgba(55, 94, 86, 0.8);
+    background-color:rgb(65, 112, 102);
     color:aliceblue;
   }
 .navbar {
     height: 70px; 
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);;
 }
+.custom-collapse{
+    background-color: rgba(65, 112, 102, 0.8);
+    padding:10px;
+  }
 .navbar-brand {
     line-height: 70px; 
   }
-.text-beige{
-    color:rgb(237, 237, 203)!important;
-    margin-right: 10px;
-}
 .navbar a:hover {
     color:white!important
-}
-.not_signed{
-    margin-left:450px
-}
-.user_name{
-    margin-top: 6px;
-    margin-left:300px
 }
 
 .btn-file{
