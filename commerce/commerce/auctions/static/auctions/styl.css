@@ -1,16 +1,33 @@
 /* body */
 html{
-    height:100%;
+    height:auto
+}
+*{
+    margin:0;
+    padding:0;
 }
 body{
-    padding: 0px 20px 0px 20px;
+    padding: 0px 50px 30px 50px;
+    margin:0;
+    height:auto;
     background-image: url('pexels-henry-&-co-2341290.jpg');
     background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;  
+    background-repeat: no-repeat; 
 }
 .main_content{
     margin-top:100px
+}
+h2{
+    padding-bottom:30px;
+}
+
+/* cards */
+.card{
+    margin:20px;
+}
+.card a{
+    margin:1px;
+    padding:15px
 }
 
 /* text */
@@ -41,6 +58,13 @@ h2, .text-beige{
 .navbar a:hover {
     color:white!important
 }
+
+/* cards */
+
+.card{
+    margin: 20px;
+}
+
 
 .btn-file{
     color:rgb(82, 82, 82);
