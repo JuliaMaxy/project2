@@ -53,7 +53,7 @@ h2{
 }
 
 /* text */
-h2, .text-beige{
+h2, .text-beige, .list-group a:hover{
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 .text-beige{
@@ -99,6 +99,27 @@ h2, .text-beige{
     box-shadow: 0 0 0 0.2rem rgba(44, 140, 44, 0.25)!important; 
   }
   
+
+/* alerts */
+.alert {
+    font-weight: 700;
+}
+
+/* lists */
+.list-group a{
+    background-color: rgba(56, 148, 74, 0.0);
+    color:black;
+    font-weight: 700;
+    border-right: unset;
+    border-left: unset;
+}
+.list-group a:hover{
+    color:beige;
+    text-decoration: none;
+    background-color: rgba(96, 145, 106, 0.5);
+}
+
+
 
 .btn-file{
     color:rgb(82, 82, 82);

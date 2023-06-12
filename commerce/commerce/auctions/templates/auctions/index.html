@@ -2,6 +2,7 @@
 
 {% block body %}
 <h2>Active Listings</h2>
+{% if listings %}
 <div class="row row-cols-xs-2 row-cols-md-3 row-cols-lg-4 g-5">
     {% for listing in listings %}
     {% if listing.active %}
@@ -29,6 +30,11 @@
             </div>
         </div>
         {% endif %}
-        {%endfor%}
+        {% endfor %}
 </div>
+{% else %}
+    <div class="alert alert-success" role="alert">
+        No active listings
+    </div>
+{% endif %}
 {% endblock %}
