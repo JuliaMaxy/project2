@@ -7,6 +7,7 @@ html{
     padding:0;
 }
 body{
+    text-align: center!important;
     padding: 0px 50px 30px 50px;
     margin:0;
     height:auto;
@@ -18,16 +19,37 @@ body{
     margin-top:100px
 }
 h2{
-    padding-bottom:30px;
+    border-bottom: 2px solid  rgb(65, 112, 102);
+    border-top: 2px solid  rgb(65, 112, 102);
+    padding: 20px !important;
+    margin-bottom: 60px !important;
 }
 
 /* cards */
 .card{
-    margin:20px;
+    margin: 5px!important;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);;
 }
 .card a{
     margin:1px;
-    padding:15px
+    padding:15px;
+    font-weight:700
+}
+.card img {
+    object-fit: cover;
+  }
+
+.card .card-body{
+    margin-top:10px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-text{
+    color:rgb(42, 107, 58);
 }
 
 /* text */
@@ -38,6 +60,18 @@ h2, .text-beige{
     color:rgb(237, 237, 203)!important;
     margin-left: 25px;
 }
+.suggestion{
+    font-weight: 700;
+    font: medium;
+    margin-top:10px;
+}
+.suggestion a{
+    color:rgb(55, 122, 53)
+}
+.suggestion a:hover{
+    color:rgb(53, 141, 112)
+}
+
 
 /* navbar */
 .bg-green {
@@ -46,7 +80,7 @@ h2, .text-beige{
   }
 .navbar {
     height: 70px; 
-    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
 }
 .custom-collapse{
     background-color: rgba(65, 112, 102, 0.8);
@@ -59,12 +93,12 @@ h2, .text-beige{
     color:white!important
 }
 
-/* cards */
-
-.card{
-    margin: 20px;
-}
-
+/* forms */
+.form-control:focus {
+    border-color: green!important; 
+    box-shadow: 0 0 0 0.2rem rgba(44, 140, 44, 0.25)!important; 
+  }
+  
 
 .btn-file{
     color:rgb(82, 82, 82);
