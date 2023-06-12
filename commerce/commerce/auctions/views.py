@@ -11,8 +11,12 @@ from datetime import datetime
 
 def index(request):
     listings = Listing.objects.all()
+    active = []
+    for listing in listings:
+        if listing.active:
+            active.append(listing)
     return render(request, "auctions/index.html", {
-        'listings': listings
+        'listings': active
     })
 
 
@@ -188,7 +192,7 @@ def watchlist(request):
         for watcher in w:
             watchers += 1
         bids = Bid.objects.filter(listing=listing).count()
-        return HttpResponseRedirect(reverse("listing",args=(listing.id,)))
+        return HttpResponseRedirect(reverse("watchlist"))
 
 
 
@@ -213,6 +217,10 @@ def category(request, category_id):
 @login_required
 def closed(request):
     listings = Listing.objects.all()
+    closed = []
+    for listing in listings:
+        if not listing.active:
+            closed.append(listing)
     return render(request, "auctions/closed_listings.html", {
-        'listings': listings
+        'listings': closed
     })

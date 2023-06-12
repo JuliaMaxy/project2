@@ -10,30 +10,30 @@
     <form action="{% url 'new' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-group">
-            <input autofocus class="form-control" type="text" name="title" placeholder="Title">
+            <input autofocus autocomplete="off" class="form-control" type="text" name="title" placeholder="Title">
+        </div> 
+        <div class="form-group">
+            <input autofocus class="form-control" autocomplete="off" type="text" name="description" placeholder="Description">
         </div>
         <div class="form-group">
-            <input autofocus class="form-control" type="text" name="description" placeholder="Description">
-        </div>
-        <div class="form-group">
-            <label for="category">Category:</label>
-            <select class="form-control" name="category">
+            <select class="form-select" name="category">
+                <option selected>Select category</option>
                 {% for category in categories %}
                  <option value="{{category.id}}">{{category.title}}</option>
                 {% endfor %}
             </select>
         </div>
         <div class="form-group">
-            <input autofocus class="form-control" type="text" name="condition" placeholder="Condition">
+            <input autofocus class="form-control" type="text" name="condition" autocomplete="off" placeholder="Condition">
         </div>
-        <div class="form-group">
-            <input class="form-control" type="number" name="bid" placeholder="Starting Bid">
+        <div class="input-group mb-3">
+            <span class="input-group-text">$</span>
+            <input class="form-control" type="number" name="bid" autocomplete="off" placeholder="Starting Bid">
         </div>
-        <div class="form-group">
-            <label class="btn btn-default btn-file">
-                Choose Image<input type="file" name="img"style="display:none;"required>
-            </label>
+        <div class="mb-3">
+            <label for="formFile" class="form-label">Choose an image
+            <input type="file" name="img" id="formFile" style="display:none"required></label>
         </div>
-        <input class="btn btn-primary" type="submit" value="Create">
+        <input class="btn btn-success" type="submit" value="Create">
     </form>
 {% endblock %}
