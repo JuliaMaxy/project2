@@ -9,35 +9,35 @@
         {% if listings %}
             <div class="row row-cols-xs-2 row-cols-md-3 row-cols-lg-4 g-5">
                 {% for listing in listings %}
-                {% if listing.active %}
-                    <div class="col">
-                        <div class="card h-100">
-                            <form action="{% url 'watchlist'%}" method="post">
-                                {% csrf_token %}
-                                <input type="hidden" value="{{listing.id}}" name="delete_listing">
-                                <button type="submit" class="btn btn-danger position-absolute top-0 end-0 m-2"> Delete</button>
-                            </form>
-                            {% if listing.picture %}
-                            <img src="{{ listing.picture.url }}" class="card-img-top" alt="...">
-                            {% endif %}
-                            <div class="card-body">
-                                <h3 class="card-title">{{listing.title}}</h3>
-                                <p class="card-subtitle text-muted">{{listing.description}}</p>
-                                <h5 class="card-text">
-                                    Price: ${% if listing.current_bid == 0%}
-                                    {{listing.starting_bid}}
-                                    {% else %}
-                                    {{listing.current_bid}}
-                                    {% endif %}
-                                </h5>
-                            </div>
-                            <a href="{% url 'listing' listing.id%}" type="button" class="btn btn-outline-success">Details</a>
-                            <div class="card-footer">
-                                <small class="text-muted">Created {{listing.time}}</small>
+                    {% if listing.active %}
+                        <div class="col">
+                            <div class="card h-100">
+                                <form action="{% url 'watchlist'%}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{listing.id}}" name="delete_listing">
+                                    <button type="submit" class="btn btn-danger position-absolute top-0 end-0 m-2"> Delete</button>
+                                </form>
+                                {% if listing.picture %}
+                                <img src="{{ listing.picture.url }}" class="card-img-top" alt="...">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h3 class="card-title">{{listing.title}}</h3>
+                                    <p class="card-subtitle text-muted">{{listing.description}}</p>
+                                    <h5 class="card-text">
+                                        Price: ${% if listing.current_bid == 0%}
+                                            {{listing.starting_bid}}
+                                        {% else %}
+                                            {{listing.current_bid}}
+                                        {% endif %}
+                                    </h5>
+                                </div>
+                                <a href="{% url 'listing' listing.id%}" type="button" class="btn btn-outline-success">Details</a>
+                                <div class="card-footer">
+                                    <small class="text-muted">Created {{listing.time}}</small>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    {% endif %}
+                        {% endif %}
                     {% endfor %}
             </div>
         {% else %}

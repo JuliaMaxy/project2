@@ -19,8 +19,7 @@
                         {% else %}
                         {{listing.current_bid}}
                         {% endif %}
-                    </h5>
-                    
+                    </h5>    
                 </div>
                 <a href="{% url 'listing' listing.id%}" type="button" class="btn btn-outline-success">Details</a>
                 <div class="card-footer">
@@ -28,7 +27,7 @@
                 </div>
             </div>
         </div>
-        {%endfor%}
+        {% endfor %}
     </div>
     {% else %}
     <div class="alert alert-success" role="alert">

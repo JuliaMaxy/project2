@@ -10,11 +10,13 @@ from datetime import datetime
 
 
 def index(request):
+    # get active listings
     listings = Listing.objects.all()
     active = []
     for listing in listings:
         if listing.active:
             active.append(listing)
+
     return render(request, "auctions/index.html", {
         'listings': active
     })
@@ -73,13 +75,16 @@ def register(request):
 
 
 def new(request):
+    # make sure the user is signed in
     if request.user.is_authenticated:
         if request.method == 'GET':
+            # get all the listing categories
             categories = Category.objects.all()
             return render(request, "auctions/new.html", {
                 "categories": categories
             })
-        else:
+        else:   
+                # get all the data from a form
                 title = request.POST["title"]
                 description = request.POST["description"]
                 category = request.POST["category"]
@@ -88,6 +93,7 @@ def new(request):
                 bid = int(request.POST["bid"])
                 image = request.FILES["img"]
                 user = request.user
+                # create new listing
                 listing = Listing(title=title, description=description, category=category, condition=condition, starting_bid=bid,
                                 creator=user, picture=image)
                 listing.save()
@@ -112,12 +118,12 @@ def listing(request, listing_id):
         # check if the listing is in the user's watchlist
         in_watchlist = WatchList.objects.filter(user=user, listing=listing).exists()
         if bids > 0:
-        
             # find out if the user has already bid on the listing
             bidder = Bid.objects.filter(listing=listing, user=user).exists()
             # get the last bid on the listing
             last =  Bid.objects.filter(listing=listing).order_by('added_time').first()
             last_user = last.user
+        # if there are no bids yet
         else:
             bidder = False
             last_user = None
@@ -130,19 +136,25 @@ def listing(request, listing_id):
         else:
             # if POST via watchlist form
             if request.POST["form"] == "1":
+                # add listing to watchlist
                 addition = WatchList.objects.create(listing=listing)
                 addition.user.add(user)
             # if POST via bid form
             elif request.POST["form"] == "2":
+                # get bid from a form
                 bid = request.POST["bid"]
+                # check if the bid is valid
                 if bids <= 0 and int(bid) > listing.starting_bid or bids > 0 and int(bid)> last.amount:
+                    # save new bid
                     b = Bid(listing=listing, amount=bid, user=user)
                     b.save()
+                    # uppdate listing
                     listing.current_bid = bid
                     listing.save()
                     bids = Bid.objects.filter(listing=listing).count()
                     bidder = True
                     last_user = request.user
+                    # send the success message to the user
                     message = "You successfully placed a bid"
                 else:
                     message = "Bid failed"
@@ -151,18 +163,23 @@ def listing(request, listing_id):
                             "last_user":last_user, "bidder":bidder
                     })
             elif request.POST["form"] == "3":
+                # close the listing
                 listing.active = False
+                # set the last user to a winner
                 listing.winner = last_user
+                # set the time of the closing to now
                 listing.closed_time = datetime.now()
+                # save uppdated listing
                 listing.save()
             elif request.POST["form"] == "4":
+                # get comment from the form
                 c = request.POST["comment"]
+                # save new comment
                 comment = Comment(author = request.user, listing=listing, comment=c)
                 comment.save()
-
-            
-            
+   
         return HttpResponseRedirect(reverse("listing",args=(listing.id,)))
+    # if not signed in
     else:
         return render(request, "auctions/listing.html", {
                 "listing":listing, "watchers":watchers, "bids":bids,
@@ -172,31 +189,29 @@ def listing(request, listing_id):
 @login_required   
 def watchlist(request):
     if request.method == "GET":
+        # get all the listings in user's watchlist
         user = request.user
         watchlist = user.watchlist.all()
         listings = []
         for listing in watchlist:
             listings.append(listing.listing)
 
-        print(listings)
         return render(request, "auctions/watchlist.html", {
             "listings":listings})
     else:
         user = request.user
+        # get the listing that the user wants deleted
         listing_id = request.POST["delete_listing"]
         listing = Listing.objects.get(pk=listing_id)
         deletion= user.watchlist.get(listing=listing)
+        # delete listing from the watchlist
         deletion.delete()
-        w = WatchList.objects.filter(listing=listing)
-        watchers = 0
-        for watcher in w:
-            watchers += 1
-        bids = Bid.objects.filter(listing=listing).count()
         return HttpResponseRedirect(reverse("watchlist"))
 
 
 
 def categories(request):
+    # get all the categories
     categories = Category.objects.all()
     return render(request, "auctions/categories.html", {
         "categories":categories
@@ -204,7 +219,9 @@ def categories(request):
 
 
 def category(request, category_id):
+    # get category
     category = Category.objects.get(pk=category_id)
+    # get all the active listings in that category
     listings = category.listings.all()
     active = []
     for listing in listings:
@@ -216,6 +233,7 @@ def category(request, category_id):
 
 @login_required
 def closed(request):
+    # get all the closed listings
     listings = Listing.objects.all()
     closed = []
     for listing in listings:

@@ -24,6 +24,11 @@ h2{
     padding: 20px !important;
     margin-bottom: 60px !important;
 }
+.highlight{
+    color:rgb(64, 94, 51);
+    font-weight: 700;
+    text-shadow: 1px 1px 3px rgba(251, 255, 0, 0.83);
+}
 h1{
     display: inline-block;
     border-bottom: 2px solid  rgb(65, 112, 102);
@@ -45,7 +50,6 @@ h1{
 .card img {
     object-fit: cover;
   }
-
 .card .card-body{
     margin-top:10px;
     display: flex;
@@ -54,7 +58,6 @@ h1{
     justify-content: center;
     align-items: center;
 }
-
 .card-text{
     color:rgb(42, 107, 58);
 }
@@ -104,7 +107,7 @@ h2, .text-beige, .list-group a:hover{
 .form-control:focus, .form-select:focus {
     border-color: green!important; 
     box-shadow: 0 0 0 0.2rem rgba(44, 140, 44, 0.25)!important; 
-  }
+}
 .form-label{
     padding:10px;
     background-color:  rgba(65, 112, 102, 0.8);
@@ -112,6 +115,20 @@ h2, .text-beige, .list-group a:hover{
     font-weight: 700;
     color:beige;
     width:100%
+}
+label{
+    font-weight: 700!important;
+}
+.form-floating{
+    color:#507147ca;
+    font-size: 20px;
+}
+textarea{
+    background-color: rgba(0, 0, 0, 0)!important;
+    border:none!important;
+    border-radius: unset!important;
+    border-bottom: 2px solid rgb(43, 91, 41)!important;
+    font-weight:600!important;
 }
 .form-label:hover{
     background-color:  rgb(65, 112, 102);
@@ -139,7 +156,6 @@ h2, .text-beige, .list-group a:hover{
 }
 
 /* accordion */
-
 .accordion{
     width: 100%!important;
     text-align: left;
@@ -166,11 +182,8 @@ h2, .text-beige, .list-group a:hover{
     border-left: 3px solid  #2c5f3b;
     padding-left: 10px;
 }
-.highlight{
-    color:rgb(64, 94, 51);
-    font-weight: 700;
-    text-shadow: 1px 1px 3px rgba(251, 255, 0, 0.83);
-}
+
+/* buttons */
 .submit-button{
     font-weight: 700!important;
     padding: 15px 30px 15px 30px !important;
@@ -185,6 +198,8 @@ h2, .text-beige, .list-group a:hover{
     background-color: bisque;
     color:#476740;
 }
+
+/* other */
 .info{
     margin-top: 20px;
     margin-bottom: 30px;
@@ -194,20 +209,6 @@ h2, .text-beige, .list-group a:hover{
     font-weight: 700;
     font-size: 22px;
     padding: 20px 10px 20px 10px
-}
-label{
-    font-weight: 700!important;
-}
-.form-floating{
-    color:#507147ca;
-    font-size: 20px;
-}
-textarea{
-    background-color: rgba(0, 0, 0, 0)!important;
-    border:none!important;
-    border-radius: unset!important;
-    border-bottom: 2px solid rgb(43, 91, 41)!important;
-    font-weight:600!important;
 }
 .details{
     font-weight:700;
