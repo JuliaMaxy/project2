@@ -143,9 +143,9 @@ def listing(request, listing_id):
                     bids = Bid.objects.filter(listing=listing).count()
                     bidder = True
                     last_user = request.user
-                    message = "Success"
+                    message = "You successfully placed a bid"
                 else:
-                    message = "Failure"
+                    message = "Bid failed"
                 return render(request, "auctions/listing.html", {
                         "listing":listing, "in_watchlist": in_watchlist, "watchers":watchers, "message":message,"bids":bids,
                             "last_user":last_user, "bidder":bidder
