@@ -17,7 +17,7 @@ place bids on listings, comment on those listings, and add listings to a “watc
    If the bid doesn’t meet those criteria, the user is presented with an error.
   - If the user is signed in and is the one who created the listing, the user has the ability to “close” the auction from this page,
    which makes the highest bidder the winner of the auction and makes the listing no longer active.
-  - If a user is signed and listing is closed, the user can view who won the auction(if anyone) onthe `closed auctions` page.
+  - If a user is signed and listing is closed, the user can view who won the auction(if anyone) on the `closed auctions` page.
   - Users who are signed in are able to add comments to the listing page.
     The listing page displays all comments that have been made on the listing.
 - **`Watchlist`**: Users who are signed in are able to visit a Watchlist page, which displays all of the listings that a user has added to their watchlist.
