@@ -1,4 +1,4 @@
-# CS50W Project 2: Commerce
+# Commerce
 ## Video Demo: https://www.youtube.com/watch?v=EQPmgzTZXok
 ![Screenshot (12)](https://github.com/JuliaMaxy/project_2/assets/121096183/59c431b2-e14a-4b22-abaf-8c61abf1968a)
 ## Description:
